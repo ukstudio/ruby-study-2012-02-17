@@ -81,45 +81,44 @@
   <section class="slide">
     <h2>ブロック</h2>
     <pre><code class='ruby'>
+# 繰り返し
+10.times{|i| puts i }
+[1,2,3,4,5].map{|i| i*2}
 
-    # 繰り返し
-    10.times{|i| puts i }
-    [1,2,3,4,5].map{|i| i*2}
+# 簡易Strategy
+%w(ruby python php javascript).sort{|a,b| a.length <=> b.length}
 
-    # 簡易Strategy
-    %w(ruby python php javascript).sort{|a,b| a.length <=> b.length}
+# 終了処理の保証
+File.open('log/development.log') do |f|
+  f.puts 'ERROR'
+end
 
-    # 終了処理の保証
-    File.open('log/development.log') do |f|
-      f.puts 'ERROR'
-    end
-
-    # DSL
-    describe User do
-      it { should be_new_record }
-    end
+# DSL
+describe User do
+  it { should be_new_record }
+end
     </code></pre>
   </section>
 
   <section class="slide">
     <h2>高階関数とブロック(1)</h2>
     <pre><code class='javascript'>
-      function foo(func) {
-        print('before')
-        func.call()
-        print('after')
-      }
-      foo(function(){ print('in function')})
+function foo(func) {
+  print('before')
+  func.call()
+  print('after')
+}
+foo(function(){ print('in function')})
     </code></pre>
     <p>ブロックは高階関数と本質は一緒。関数の代わりにコードの塊をブロックとしてメソッドに渡す。</p>
     <pre><code class="ruby">
-      def foo
-        puts 'before'
-        yield # ブロックが実行される
-        puts 'after'
-      end
+def foo
+  puts 'before'
+  yield # ブロックが実行される
+  puts 'after'
+end
 
-      foo { puts 'in block' }
+foo { puts 'in block' }
     </code></pre>
   </section>
 
@@ -127,14 +126,50 @@
     <h2>高階関数とブロック(2)</h2>
     <p>ブロックは高階関数と違って複数わたせない。どうしてもって時はlambdaかprocを使う。</p>
     <pre><code class="ruby">
-      def foo(proc1,proc2)
-        puts 'before'
-        proc1.call
-        proc2.call
-        puts 'after'
-      end
+def foo(proc1,proc2)
+  puts 'before'
+  proc1.call
+  proc2.call
+  puts 'after'
+end
 
-      foo(lambda{ puts 'proc1'}, lambda{ puts 'proc2' })
+foo(lambda{ puts 'proc1'}, lambda{ puts 'proc2' })
+    </code></pre>
+  </section>
+
+  <section class="slide">
+    <h2>Mix-in</h2>
+    <ul>
+      <li>通常の継承は単一継承のみ</li>
+      <li>モジュールをincludeして多重継承を実現する</li>
+    </ul>
+    <pre><code class="ruby">
+class Person
+  include ActiveModel::Validations
+  attr_accessor :name
+  validates :name, :presence =&lt; true
+end
+
+Person.new.valid? #=&gt; false
+    </code></pre>
+  </section>
+
+  <section class="slide">
+    <h2>Duck Typing</h2>
+    <p>ガァガァうるさいならそいつはアヒルだ</p>
+    <p>二郎を食べるならそいつは(ry</p>
+    <pre><code class="ruby">
+class Logger
+  def self.write(out, log)
+    out.write log
+  end
+end
+
+File.open("hoge", "w") do |f|
+  Logger.write(f, "log") # ファイルに書き込み
+end
+
+Logger.write($stdout, "log")
     </code></pre>
   </section>
 
