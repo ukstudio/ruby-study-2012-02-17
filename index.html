@@ -398,11 +398,44 @@ Hoge.class_method #=&gt; class_method
   </section>
 
   <section class="slide">
+    <h2>ライブラリ・プラグイン</h2>
+    <p>RubyのライブラリやRailsのプラグインは移り変わりが速い。</p>
+    <p>例: jeweler使えばいいとか思ってたのに、bundlerのせいでオワコン扱いされてた</p>
+    <ul>
+      <li>単に使いやすくなっただけなら無理に変更する必要はない(次の新規案件とかでどうぞ)</li>
+      <li>ライブラリのメンテがされてない・Railsのバージョンに追随してないとかだと変更した方がいい</li>
+      <li>場合によってはAPIがある程度慣習で固定されていることもある。current_userとか。</li>
+      <li>手が早い人のgithubのwatchを観察しよう。</li>
+      <li>定番所はruby-toolbox.comを見ればOK。</li>
+    </ul>
+  </section>
+
+  <section class="slide">
+    <h2>パターン</h2>
+    <p>例えば、@user.saveの時に同時になにか処理を行なわせたい時にsaveメソッドをオーバーライドせずにbefore/after_saveを使う。</p>
+    <pre><code class="ruby">
+class User &gt; ActiveRecord::Base
+  def save(*args)
+    puts 'before'
+    super(*args)
+  end
+
+  def before_puts
+    puts 'before'
+  end
+  before__save :before_puts
+end
+    </code></pre>
+    <p>個人的に割とこういうのは感覚的に身についてしまっているので、文書化しようとしてもそもそも意識にあがってこないし、数も多い。</p>
+    <p>なのでRailsに詳しい人とペアプロ、レビューできる環境に身を置くのが手っ取りばやい。</p>
+    <p>コードを読むにしても、アプリケーションのコードあまり公開されてないので厳しいかも。</p>
+  </section>
+
+  <section class="slide">
     <h2>身も蓋もないまとめ</h2>
     <p>結局はMVC、RESTfulアプリケーション、オブジェクト指向の原則に従って実装しようって感じ。テストも重要。</p>
     <p>既にあるRailsの機能はRailsレシピブックから大体逆引きできるのでそこから探そう。あとはAPIDocかコードを読むしかない。</p>
     <p>エッヂな機能はCHANGELOGやgitのlogをみよう。運がよければ誰かがブログに書いてくれたりもする。</p>
-    <p>最後適当なのは今が朝7時だからです。あとは質疑応答もしくは直接声かけて聞いてください。</p>
   </section>
 
   <!-- Grab CDN jQuery, with a protocol relative URL; fall back to local if offline -->
